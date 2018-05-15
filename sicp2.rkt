@@ -1,5 +1,7 @@
 #lang racket
 
+;Helpers
+
 (define (gcd a b)
   (if (= b 0)
       a
@@ -11,6 +13,16 @@
 
 (define (average a b)
   (/ (+ a b) 2))
+
+(define (=number? exp num)
+  (and (number? exp) (= exp num)))
+
+(define (** base exponent)
+  (define (exponent-helper base exponent result)
+    (if (= exponent 1)
+        (* base result)
+        (exponent-helper base (- exponent 1) (* result base))))
+  (exponent-helper base exponent 1))
 
 ;2.1
 
@@ -151,3 +163,79 @@
 ;Exercise 2.27
 ;Modify your reverse procedure of exercise 2.18 to produce a deep-reverse procedure that takes a list as argument
 ;and returns as its value the list with its elements reversed and with all sublists deep-reversed as well. For example,
+
+
+;Exercise 2.54
+(define (equal? x y)
+  (cond ((and (null? x) (null? y)) #t)
+        ((eq? (car x) (car y))
+         (equal? (cdr x) (cdr y)))
+        (else #f)))
+
+;Exercise 2.55
+(eq? (car ''abracadabra) (car (quote (quote abracadabra))))
+
+
+;2.3.2 Symbolic Differentiation
+(define (variable? x) (symbol? x))
+(define (same-variable? x y)
+  (and (variable? x) (variable? y) (eq? x y)))
+
+(define (make-sum x y . z) ; Need to finish this
+  (cond ((=number? x 0) y)
+        ((=number? y 0) x)
+        ((and (number? x) (number? y)) (+ x y))
+        (else (list '+ x y))))
+
+(define (sum? x)
+  (and (pair? x) (eq? (car x) '+)))
+(define (addend s) (cadr s))
+(define (augend s) (caddr s))
+
+(define (make-product x y)
+  (cond ((or (=number? x 0) (=number? y 0)) 0)
+        ((=number? x 1) y)
+        ((=number? y 1) x)
+        ((and (number? x) (number? y)) (* x y))
+        (else (list '* x y))))
+
+(define (product? x)
+  (and (pair? x) (eq? (car x) '*)))
+(define (multiplier p) (cadr p))
+(define (multiplicand p) (caddr p))
+
+(define (make-exponentiation base exponent)
+  (cond ((=number? exponent 0) 1)
+        ((=number? exponent 1) base)
+        ((and (number? base) (number? exponent) (** base exponent)))
+        (else (list '** base exponent))))
+(define (exponentiation? x)
+  (and (pair? x) (eq? (car x) '**)))
+(define (base e) (cadr e))
+(define (exponent e) (caddr e))
+
+(define (deriv exp var)
+  (cond ((number? exp) 0)
+        ((variable? exp)
+         (if (same-variable? exp var) 1 0))
+        ((sum? exp)
+         (make-sum (deriv (addend exp) var)
+                   (deriv (augend exp) var)))
+        ((product? exp)
+         (make-sum
+          (make-product (multiplier exp)
+                        (deriv (multiplicand exp) var))
+          (make-product (multiplicand exp)
+                        (deriv(multiplier exp) var))))
+        ((exponentiation? exp)
+         (make-product (exponent exp)
+                       (make-product (make-exponentiation (base exp) (- (exponent exp) 1))
+                                     (deriv (base exp) var))))
+        (else
+         (error "unknown expression type -- DERIV" exp))))
+
+
+;Exercise 2.56  Added above
+;Exercise 2.57
+
+
