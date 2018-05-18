@@ -1,61 +1,11 @@
 #lang racket
 
-;Helpers
-
-(define (gcd a b)
-  (if (= b 0)
-      a
-      (gcd b (remainder a b))))
-
-(define (sign n)
-  (cond ((>= n 0) 1)
-        (else -1)))
-
-(define (average a b)
-  (/ (+ a b) 2))
-
-(define (=number? exp num)
-  (and (number? exp) (= exp num)))
-
-(define (** base exponent)
-  (define (exponent-helper base exponent result)
-    (if (= exponent 1)
-        (* base result)
-        (exponent-helper base (- exponent 1) (* result base))))
-  (exponent-helper base exponent 1))
+(require "common.rkt")
+(require "numbers.rkt")
 
 ;2.1
 
-(define (make-rat n d)
-  (let ((g (gcd n d))
-        (s (* (sign n) (sign d))))
-    (cons (* s (/ n g)) (abs (/ d g)))))
-(define (numer x) (car x))
-(define (denom x) (cdr x))
 
-(define (add-rat x y)
-  (make-rat (+ (* (numer x) (denom y))
-               (* (numer y) (denom x)))
-            (* (denom x) (denom y))))
-(define (sub-rat x y)
-  (make-rat (- (* (numer x) (denom y))
-               (* (numer y) (denom x)))
-            (* (denom x) (denom y))))
-(define (mul-rat x y)
-  (make-rat(* (numer x) (numer y))
-           (* (denom x) (denom y))))
-(define (div-rat x y)
-  (make-rat (* (numer x) (denom y))
-            (* (numer y) (denom x))))
-(define (rat-eq? x y)
-  (equal? (* (numer x) (denom y))
-          (* (numer y) (denom x))))
-
-(define (print-rat x)
-  (newline)
-  (display (numer x))
-  (display "/")
-  (display (denom x)))
 
 
 ;Exercise 2.2
@@ -87,20 +37,7 @@
 
 
 ;Section 2.2.1
-(define (list-ref items n)
-  (if (= n 0)
-      (car items)
-      (list-ref (cdr items) (- n 1))))
-
-(define (length items)
-  (if (null? items)
-      0
-      (+ 1 (length (cdr items)))))
-
-(define (append list1 list2)
-  (if (null? list1)
-      list2
-      (cons (car list1) (append (cdr list1) list2))))
+; Moved to common.rkt
 
 ;Exercise 2.17
 ;Define a procedure last-pair that returns the list that contains only the last element of a given (nonempty) list:
