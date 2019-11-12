@@ -1,1 +1,0 @@
-("6.12" ("b263263e4782db15fc49e7362147d93cb50dfaa2" . "3cab2b9c5b2b2424d63997425c542adc8fd54cf7") #"D:\\development\\racket\\sicp\\common.rkt" (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
