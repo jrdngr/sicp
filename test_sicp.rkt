@@ -1,4 +1,4 @@
 #lang sicp
-;racket -l sicp --repl
+;racket -l sicp -l racket/init --repl
 (require sicp)
 (inc 42)
