@@ -3,12 +3,37 @@
 (require "common.rkt")
 (require "numbers.rkt")
 
-;2.1
+; 2.1
+
+(define (newcons x y)
+  (define (dispatch m)
+    (cond ((= m 0) x)
+          ((= m 1) y)
+          (else
+            (error "Argument not 0 or 1: CONS" m))))
+  dispatch)
+(define (newcar z) (z 0))
+(define (newcdr z) (z 1))
+
+(define (lcons x y)
+  (lambda (m) (m x y)))
+(define (lcar z)
+  (z (lambda (p q) p)))
+(define (lcdr z)
+  (z (lambda (p q) q)))
 
 
+; Exercise 2.6
+(define zero (lambda (f) (lambda (x) x)))
+(define (add-1 n)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
 
+; (add-1 zero)
+; (lambda (f) (lambda (x) (f ((zero f) x))))
+; (lambda (f) (lambda (x) (f (((lambda (f) (lambda (x) x)) f) x))))
+; (lambda (f) (lambda (x) (f (f x))))
 
-;Exercise 2.2
+; Exercise 2.2
 (define (make-point x y)
   (cons x y))
 (define (x-point p)
@@ -36,30 +61,30 @@
    (average (y-point (start-segment s)) (y-point (end-segment s)))))
 
 
-;Section 2.2.1
+; Section 2.2.1
 ; Moved to common.rkt
 
-;Exercise 2.17
-;Define a procedure last-pair that returns the list that contains only the last element of a given (nonempty) list:
+; Exercise 2.17
+; Define a procedure last-pair that returns the list that contains only the last element of a given (nonempty) list:
 (define (last-pair items)
   (if (null? (cdr items))
       (car items)
       (last-pair (cdr items))))
 
 
-;Exercise 2.18
-;Define a procedure reverse that takes a list as argument and returns a list of the same elements in reverse order:
+; Exercise 2.18
+; Define a procedure reverse that takes a list as argument and returns a list of the same elements in reverse order:
 (define (reverse items)
   (if (null? items)
       items
       (append (reverse (cdr items)) (list (car items)))))
 
 
-;Exercise 2.20
-;Use this notation to write a procedure same-parity that takes one or more integers and returns a list of all the arguments
-;that have the same even-odd parity as the first argument.  For example:
-;(same-parity 1 2 3 4 5 6 7)
-;(1 3 5 7)
+; Exercise 2.20
+; Use this notation to write a procedure same-parity that takes one or more integers and returns a list of all the arguments
+; that have the same even-odd parity as the first argument.  For example:
+; (same-parity 1 2 3 4 5 6 7)
+; (1 3 5 7)
 
 (define (same-parity . items)
   (define (same-parity-helper stuff parity-proc result)
@@ -79,7 +104,7 @@
       (cons (proc (car items))
             (map proc (cdr items)))))
 
-;Exercise 2.23
+; Exercise 2.23
 (define (for-each proc items)
   (cond
     ((null? items)
@@ -89,7 +114,7 @@
      (for-each proc (cdr items)))))
 
 
-;2.2.2
+; 2.2.2
 
 (define (count-leaves x)
   (cond ((null? x) 0)
@@ -97,17 +122,17 @@
         (else (+ (count-leaves (car x))
                  (count-leaves (cdr x))))))
 
-;Exercise 2.27
-;Modify your reverse procedure of exercise 2.18 to produce a deep-reverse procedure that takes a list as argument
-;and returns as its value the list with its elements reversed and with all sublists deep-reversed as well. For example,
+; Exercise 2.27
+; Modify your reverse procedure of exercise 2.18 to produce a deep-reverse procedure that takes a list as argument
+; and returns as its value the list with its elements reversed and with all sublists deep-reversed as well. For example,
 
 
-;Exercise 2.54
-;(define (equal? x y)
-;  (cond ((and (null? x) (null? y)) #t)
-;        ((eq? (car x) (car y))
-;         (equal? (cdr x) (cdr y)))
-;        (else #f)))
+; Exercise 2.54
+; (define (equal? x y)
+;   (cond ((and (null? x) (null? y)) #t)
+;         ((eq? (car x) (car y))
+;          (equal? (cdr x) (cdr y)))
+;         (else #f)))
 
 (define (equal? list1 list2)
   (cond ((and (not (pair? list1)) (not (pair? list2)))
@@ -117,11 +142,11 @@
               (equal? (cdr list1) (cdr list2))))
         (else false)))
 
-;Exercise 2.55
+; Exercise 2.55
 (eq? (car ''abracadabra) (car (quote (quote abracadabra))))
 
 
-;2.3.2 Symbolic Differentiation
+; 2.3.2 Symbolic Differentiation
 (define (variable? x) (symbol? x))
 (define (same-variable? x y)
   (and (variable? x) (variable? y) (eq? x y)))
@@ -180,21 +205,21 @@
          (error "unknown expression type -- DERIV" exp))))
 
 
-;Exercise 2.56  Added above
-;Exercise 2.57
+; Exercise 2.56  Added above
+; Exercise 2.57
 
 
-;2.3.3 Example: Representing Sets
+; 2.3.3 Example: Representing Sets
 
-;(define (element-of-set? x set)
-;  (cond ((null? set) false)
-;        ((equal? x (car set)) true)
-;        (else (element-of-set? x (cdr set)))))
+; (define (element-of-set? x set)
+;   (cond ((null? set) false)
+;         ((equal? x (car set)) true)
+;         (else (element-of-set? x (cdr set)))))
 
-;(define (adjoin-set x set)
-;  (if (element-of-set? x set)
-;      set
-;      (cons x set)))
+; (define (adjoin-set x set)
+;   (if (element-of-set? x set)
+;       set
+;       (cons x set)))
 
 (define (intersection-set set1 set2)
   (cond ((or (null? set1) (null? set2)) '())
@@ -203,7 +228,7 @@
                (intersection-set (cdr set1) set2)))
         (else (intersection-set (cdr set1) set2))))
 
-;Exercise 2.59
+; Exercise 2.59
 (define (union-set set1 set2)
   (cond ((null? set1) set2)
         ((null? set2) set1)
@@ -212,7 +237,7 @@
         (else (cons (car set1)(union-set (cdr set1) set2)))))
 
 
-;Sets as binary trees
+; Sets as binary trees
 
 (define (entry tree) (car tree))
 (define (left-branch tree) (cadr tree))
