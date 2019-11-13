@@ -5,7 +5,7 @@
 (define (cube n)
   (* n n n))
 
-;1.2.2
+; 1.2.2
 (define (fib-rec n)
   (cond ((= n 0) 0)
         ((= n 1) 1)
@@ -20,10 +20,10 @@
       (fib-iter (+ a b) a (- count 1))))
   
 
-;Exercise 1.11
-;A function f is defined by the rule that f(n) = n if n<3 and f(n) = f(n - 1) + 2f(n - 2) +
-;3f(n - 3) if n>= 3. Write a procedure that computes f by means of a recursive process. Write a procedure
-;that computes f by means of an iterative process.
+; Exercise 1.11
+; A function f is defined by the rule that f(n) = n if n<3 and f(n) = f(n - 1) + 2f(n - 2) +
+; 3f(n - 3) if n>= 3. Write a procedure that computes f by means of a recursive process. Write a procedure
+; that computes f by means of an iterative process.
 
 (define (f n)
   (if (< n 3)
@@ -38,12 +38,12 @@
       (g-iter (+ a (* 2 b) (* 3 c)) a b (- count 1))))
 
 
-;Exercise 1.12
-;Write a procedure that computes elements of Pascal’s triangle by means of a
-;recursive process.
+; Exercise 1.12
+; Write a procedure that computes elements of Pascal’s triangle by means of a
+; recursive process.
 
 
-;1.2.4
+; 1.2.4
 (define (expt-sad b n)
   (if (= n 0)
       1
@@ -120,15 +120,19 @@
 (define (sum-integers a b)
   (sum identity a inc b))
 
+(define (integral f a b dx)
+  (define (add-dx x) (+ x dx))
+  (* (sum f (+ a (/ dx 2.0)) add-dx b)
+    dx))
 
-;Exercise 1.31
+; Exercise 1.31
 (define (product term a next b)
   (if (> a b)
       0
       (* (term a)
          (product term (next a) next b))))
 
-;Exercise 1.32
+; Exercise 1.32
 (define (accumulate combiner null-value term a next b)
   (if (> a b)
       null-value
@@ -137,7 +141,7 @@
 
 
 
-;1.3.2
+; 1.3.2
 
 (define (pi-sum a b)
   (sum (lambda (x) (/ 1.0 (* x (+ x 2))))
@@ -170,16 +174,16 @@
        (* a b))))
 
 
-;Exercise 1.34
+; Exercise 1.34
 (define (g1 g2)
   (g2 2))
 
 
 
-;1.3.3
+; 1.3.3
 
 
-;1.3.4
+; 1.3.4
 
 (define (average a b)
   (/ (+ a b) 2))
