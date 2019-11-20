@@ -15,7 +15,7 @@
           "Insufficient funds"))))
 
 (define (make-account balance)
-  (define (widthdraw amount)
+  (define (withdraw amount)
     (if (>= balance amount)
         (begin (set! balance (- balance amount))
                balance)
